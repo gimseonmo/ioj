@@ -3,7 +3,7 @@
     <div class="logo">
       <img
         src="@/assets/logos/logo.png"
-        style="height=35px; width=auto;"
+        style="height:35px; width:auto;"
         alt="oj admin"
       >
     </div>

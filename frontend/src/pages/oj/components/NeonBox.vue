@@ -124,7 +124,7 @@ export default {
           flex-direction: row;
           justify-content: space-between;
           .contest-information-big {
-            color: #173747;
+            color: #015ADF;
             font-size: 1.2rem;
             white-space: nowrap;
           }

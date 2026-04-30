@@ -1,13 +1,13 @@
 <template>
   <div class="lecture-list-card font-bold">
     <div class="flex justify-between mr-32">
-      <page-title text="Course"/>
+      <page-title text="강의"/>
       <div class="my-auto h-8">
         <b-button
           v-if="!saveBtnVisible"
           size="sm"
           @click="setBookmark"
-        >All Course</b-button>
+        >모든 강의</b-button>
         <b-button
           v-if="saveBtnVisible"
           size="sm"
@@ -17,7 +17,7 @@
         </b-button>
       </div>
     </div>
-    <div class="no-lecture" v-if="!lectureList.length">No Course</div>
+    <div class="no-lecture" v-if="!lectureList.length">강의가 없습니다.</div>
     <div class="lecture-card-list">
       <b-card
         v-for="(lecture,index) in lectureList"

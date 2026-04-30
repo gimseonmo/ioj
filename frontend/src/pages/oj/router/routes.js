@@ -64,13 +64,13 @@ export default [
   },
   {
     name: 'email-auth',
-    path: '/email-auth/:token',
+    path: '/email-auth/',
     meta: { title: 'Email Authentication' },
     component: EmailAuth
   },
   {
     name: 'register',
-    path: '/register/:token',
+    path: '/register/:token?',
     meta: { title: 'Register' },
     component: Register
   },

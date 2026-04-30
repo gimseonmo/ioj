@@ -1,7 +1,6 @@
 <template>
   <div id="sidebar-wrapper">
     <b-list-group class="prof_vertical_menu" v-show="sideMenuShow">
-      <img id="coding-platform-logo" src="@/assets/logos/codingPlatformLogo.png" alt="coding-platform-logo" @click="goHome">
       <b-list-group-item>
         <div style="width: 100%;height:1px;background-color: #B8B8B8;"></div>
       </b-list-group-item>

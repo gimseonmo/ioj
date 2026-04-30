@@ -196,7 +196,7 @@ class UsernameOrEmailCheck(APIView):
         if data.get("email"):
             if User.objects.filter(email=data["email"].lower()).exists():
                 result["email"] = 1
-            elif data["email"].split("@")[1] not in ("g.skku.edu", "skku.edu"):
+            elif data["email"].split("@")[1] not in ("shindo.hs.kr",):
                 result["email"] = 2
         return self.success(result)
 
@@ -215,19 +215,14 @@ class UserRegisterAPI(APIView):
         data["username"] = data["username"].lower()
         data["email"] = data["email"].lower()
 
-        email_auth_token = data["token"]
-        token_cache_key = f"{CacheKey.auth_token_cache}:{email_auth_token}"
-        email_cache_key = f"{CacheKey.auth_email_cache}:{email_auth_token}"
-        auth_email = cache.get(email_cache_key)
-        if not cache.get(token_cache_key):
-            return self.error("Token does not exist")
-        if not data["email"] == auth_email:
-            return self.error("It is not authenticated email")
-
         if User.objects.filter(username=data["username"]).exists():
             return self.error("Username already exists")
-        if not re.match(r"^20[0-9]{8}$", data["username"]):
+        if User.objects.filter(email=data["email"]).exists():
+            return self.error("Email already exists")
+        if not re.match(r"^[0-9]{7}$", data["username"]):
             return self.error("Not student ID")
+        if data["email"].split("@")[1] not in ("shindo.hs.kr",):
+            return self.error("Invalid domain (Use shindo.hs.kr)")
 
         user = User.objects.create(username=data["username"], email=data["email"], major=data["major"])
         user.set_password(data["password"])
@@ -235,9 +230,6 @@ class UserRegisterAPI(APIView):
         user.save()
 
         UserProfile.objects.create(user=user)
-
-        cache.delete(token_cache_key)
-        cache.delete(email_cache_key)
         return self.success("Succeeded")
 
 
@@ -295,8 +287,8 @@ class SendEmailAuthAPI(APIView):
             return self.error("Invalid captcha")
         if User.objects.filter(email=email).exists():
             return self.error("Email already exists")
-        if email.split("@")[1] not in ("g.skku.edu", "skku.edu"):
-            return self.error("Invalid domain (Use skku.edu or g.skku.edu)")
+        if email.split("@")[1] not in ("shindo.hs.kr",):
+            return self.error("Invalid domain (Use shindo.hs.kr)")
 
         email_auth_token = rand_str()
         token_cache_key = f"{CacheKey.auth_token_cache}:{email_auth_token}"

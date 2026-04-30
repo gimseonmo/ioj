@@ -4,8 +4,8 @@ FROM node:14-alpine AS builder
 ADD ./frontend /build
 WORKDIR /build
 
-RUN yarn install && \
-    yarn build
+RUN npm ci && \
+    npm run build
 
 # Deploy Stage
 FROM python:3.8.12-alpine3.15
@@ -19,7 +19,8 @@ WORKDIR /app
 HEALTHCHECK --interval=5s --retries=3 CMD python /app/deploy/health_check.py
 
 RUN apk add --update --no-cache build-base nginx openssl curl unzip supervisor jpeg-dev zlib-dev postgresql-dev freetype-dev && \
-    pip install --no-cache-dir -r /app/deploy/requirements.txt && \
+    pip install --no-cache-dir "setuptools<58" "Cython<3" wheel && \
+    pip install --no-cache-dir --no-build-isolation -r /app/deploy/requirements.txt && \
     apk del build-base --purge
 
 COPY --from=builder /build/dist /app/dist

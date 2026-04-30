@@ -1,6 +1,7 @@
 version: "3"
 services:
   oj-rsync-master:
+    platform: linux/amd64 
     image: oj_rsync
     container_name: oj-rsync
     volumes:

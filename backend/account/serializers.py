@@ -20,7 +20,6 @@ class UserRegisterSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=6)
     email = serializers.EmailField(max_length=64)
     major = serializers.CharField(max_length=128)
-    token = serializers.CharField()
 
 
 class DeleteAccountSerializer(serializers.Serializer):

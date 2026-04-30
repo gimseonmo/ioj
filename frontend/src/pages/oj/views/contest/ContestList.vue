@@ -2,92 +2,281 @@
   <div>
     <page-top>
       <template #title>
-        <span class="title-white">🏆 SKKU Coding Platform</span>
-        <span class="title-gold"> Contests</span>
+        <span class="title-white">🏆 INGENIOUS </span>
+        <span class="title-gold">CONTEST 🏅</span>
       </template>
       <template #description>
-        Compete with schoolmates & win the prizes!
+        최고의 프로그래밍 경진대회에 참가하세요!
       </template>
     </page-top>
+
     <div class="contest-list-container">
-      <h4 class="subtitle-blue text-xl" v-if="contestsUnderway.length || contestsUnderwayNoPermission.length">
-        Active Contests >>
-      </h4>
-      <neon-box color="#8DC63F" class="my-3" v-for="(contest, index) in contestsUnderway" :key="'unp' + index"
-                :leftTop="contest.title" :leftBottom="makeGroupRequirementInfo(contest)" :rightBottom="'Started ' + contest.startedTimeFromNow" :rightTop="contest.participants_count" rightTopIcon="users"
-                :shadow="true" @click.native="goContest(contest)">
-        <template #overlay-icon>
-          <icon icon="arrow-right"></icon>
-        </template>
-      </neon-box>
-      <neon-box color="#B4B4B4" v-for="(contest, index) in contestsUnderwayNoPermission"
-                :leftTop="contest.title" :leftBottom="makeGroupRequirementInfo(contest)" :rightBottom="'Started ' + contest.startedTimeFromNow" :rightTop="contest.participants_count" rightTopIcon="users"
-                :key="'unn' + index"  :shadow="true" class="my-3" @click.native="showContestInformationModal(contest)">
-        <template #overlay-icon>
-          <b-icon-zoom-in color="#B4B4B4" width="1.5em" height="1.5em"></b-icon-zoom-in>
-        </template>
-      </neon-box>
-      <button v-if="contestsUnderwayRendered < contestsUnderwayTotal" @click="loadMoreContests(CONTEST_STATUS.UNDERWAY)">Load More..</button>
-      <h4 class="subtitle-blue text-xl" v-if="contestsUpcoming.length || contestsUpcomingNoPermission.length">
-        Upcoming Contests >>
-      </h4>
-      <neon-box color="#8DC63F" class="my-3" v-for="(contest, index) in contestsUpcoming" :key="'upp' + index"
-                :leftTop="contest.title" :leftBottom="makeGroupRequirementInfo(contest)" :rightBottom="'Start ' + contest.remainTime" :rightTop="contest.participants_count" rightTopIcon="users"
-                @click.native="showContestInformationModal(contest)">
-        <template #overlay-icon>
-          <b-icon-zoom-in color="#8DC63F" width="1.5em" height="1.5em"></b-icon-zoom-in>
-        </template>
-      </neon-box>
-      <neon-box v-for="(contest, index) in contestsUpcomingNoPermission"
-                :leftTop="contest.title" :leftBottom="makeGroupRequirementInfo(contest)" :rightBottom="'Start ' + contest.remainTime" :rightTop="contest.participants_count" rightTopIcon="users"
-                :key="'upn' + index" color="#B4B4B4" class="my-3" @click.native="showContestInformationModal(contest)">
-        <template #overlay-icon>
-          <b-icon-zoom-in color="#B4B4B4" width="1.5em" height="1.5em"></b-icon-zoom-in>
-        </template>
-      </neon-box>
-      <button v-if="contestsUpcomingRendered < contestsUpcomingTotal" @click="loadMoreContests(CONTEST_STATUS.NOT_START)">Load More..</button>
-      <h4 class="subtitle-red text-xl">
-        Finished Contests
-        <button class="subtitle-toggle" @click="showFinishedContests = !showFinishedContests">
-          <b-icon :icon="showFinishedContests ? 'caret-up-fill':'caret-down-fill'" color="#FF6663"></b-icon>
-        </button>
-      </h4>
-      <neon-box v-show="showFinishedContests" v-for="(contest, index) in contestsFinished"
-                :leftTop="contest.title" :leftBottom="makeGroupRequirementInfo(contest)" :rightBottom="'Finished ' + contest.finishedTimeFromNow" :rightTop="contest.participants_count" rightTopIcon="users"
-                :key="'fi' + index" color="#FF6663" class="my-3" @click.native="goContest(contest)">
-        <template #overlay-icon>
-          <icon icon="arrow-right"></icon>
-        </template>
-      </neon-box>
-      <b-pagination
-        v-show="showFinishedContests"
-        v-model="currentPage"
-        :per-page="perPage"
-        align="right"
-        :total-rows="contestsFinishedTotal"
-      />
+      <!-- Active Contests -->
+      <div v-if="contestsUnderway.length || contestsUnderwayNoPermission.length" class="contests-section">
+        <div class="section-header">
+          <b-icon icon="play-circle-fill" class="section-icon"></b-icon>
+          <h2 class="section-title">진행 중인 경진대회</h2>
+          <span class="contest-count">{{ contestsUnderway.length + contestsUnderwayNoPermission.length }}</span>
+        </div>
+
+        <div class="contests-grid">
+          <div
+            v-for="(contest, index) in contestsUnderway"
+            :key="'unp' + index"
+            class="contest-card contest-card-active"
+            @click="goContest(contest)"
+          >
+            <div class="card-header">
+              <div class="card-badge badge-active">진행 중</div>
+              <div class="card-participants">
+                <b-icon icon="people-fill" class="icon-small"></b-icon>
+                {{ contest.participants_count }}
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h3 class="card-title">{{ contest.title }}</h3>
+              <p class="card-subtitle">{{ makeGroupRequirementInfo(contest) }}</p>
+            </div>
+
+            <div class="card-footer">
+              <span class="time-info">
+                <b-icon icon="clock-history" class="icon-small"></b-icon>
+                {{ contest.startedTimeFromNow }}
+              </span>
+              <div class="card-action">
+                <b-icon icon="arrow-right" class="action-icon"></b-icon>
+              </div>
+            </div>
+
+            <div class="card-overlay"></div>
+          </div>
+
+          <div
+            v-for="(contest, index) in contestsUnderwayNoPermission"
+            :key="'unn' + index"
+            class="contest-card contest-card-locked"
+            @click="showContestInformationModal(contest)"
+          >
+            <div class="card-header">
+              <div class="card-badge badge-locked">제한됨</div>
+              <div class="card-participants">
+                <b-icon icon="people-fill" class="icon-small"></b-icon>
+                {{ contest.participants_count }}
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h3 class="card-title">{{ contest.title }}</h3>
+              <p class="card-subtitle">{{ makeGroupRequirementInfo(contest) }}</p>
+            </div>
+
+            <div class="card-footer">
+              <span class="time-info">
+                <b-icon icon="clock-history" class="icon-small"></b-icon>
+                {{ contest.startedTimeFromNow }}
+              </span>
+              <div class="card-action">
+                <b-icon icon="zoom-in" class="action-icon"></b-icon>
+              </div>
+            </div>
+
+            <div class="card-overlay"></div>
+          </div>
+        </div>
+
+        <b-button
+          v-if="contestsUnderwayRendered < contestsUnderwayTotal"
+          @click="loadMoreContests(CONTEST_STATUS.UNDERWAY)"
+          class="load-more-btn"
+        >
+          더보기
+        </b-button>
+      </div>
+
+      <!-- Upcoming Contests -->
+      <div v-if="contestsUpcoming.length || contestsUpcomingNoPermission.length" class="contests-section">
+        <div class="section-header">
+          <b-icon icon="calendar-event" class="section-icon"></b-icon>
+          <h2 class="section-title">예정된 경진대회</h2>
+          <span class="contest-count">{{ contestsUpcoming.length + contestsUpcomingNoPermission.length }}</span>
+        </div>
+
+        <div class="contests-grid">
+          <div
+            v-for="(contest, index) in contestsUpcoming"
+            :key="'upp' + index"
+            class="contest-card contest-card-upcoming"
+            @click="showContestInformationModal(contest)"
+          >
+            <div class="card-header">
+              <div class="card-badge badge-upcoming">예정</div>
+              <div class="card-participants">
+                <b-icon icon="people-fill" class="icon-small"></b-icon>
+                {{ contest.participants_count }}
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h3 class="card-title">{{ contest.title }}</h3>
+              <p class="card-subtitle">{{ makeGroupRequirementInfo(contest) }}</p>
+            </div>
+
+            <div class="card-footer">
+              <span class="time-info">
+                <b-icon icon="hourglass-start" class="icon-small"></b-icon>
+                {{ contest.remainTime }}
+              </span>
+              <div class="card-action">
+                <b-icon icon="zoom-in" class="action-icon"></b-icon>
+              </div>
+            </div>
+
+            <div class="card-overlay"></div>
+          </div>
+
+          <div
+            v-for="(contest, index) in contestsUpcomingNoPermission"
+            :key="'upn' + index"
+            class="contest-card contest-card-locked"
+            @click="showContestInformationModal(contest)"
+          >
+            <div class="card-header">
+              <div class="card-badge badge-locked">제한됨</div>
+              <div class="card-participants">
+                <b-icon icon="people-fill" class="icon-small"></b-icon>
+                {{ contest.participants_count }}
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h3 class="card-title">{{ contest.title }}</h3>
+              <p class="card-subtitle">{{ makeGroupRequirementInfo(contest) }}</p>
+            </div>
+
+            <div class="card-footer">
+              <span class="time-info">
+                <b-icon icon="hourglass-start" class="icon-small"></b-icon>
+                {{ contest.remainTime }}
+              </span>
+              <div class="card-action">
+                <b-icon icon="zoom-in" class="action-icon"></b-icon>
+              </div>
+            </div>
+
+            <div class="card-overlay"></div>
+          </div>
+        </div>
+
+        <b-button
+          v-if="contestsUpcomingRendered < contestsUpcomingTotal"
+          @click="loadMoreContests(CONTEST_STATUS.NOT_START)"
+          class="load-more-btn"
+        >
+          더보기
+        </b-button>
+      </div>
+
+      <!-- Finished Contests -->
+      <div class="contests-section">
+        <div class="section-header" @click="showFinishedContests = !showFinishedContests" style="cursor: pointer;">
+          <b-icon icon="check-circle-fill" class="section-icon"></b-icon>
+          <h2 class="section-title">종료된 경진대회</h2>
+          <span class="contest-count">{{ contestsFinishedTotal }}</span>
+          <b-icon
+            :icon="showFinishedContests ? 'chevron-up' : 'chevron-down'"
+            class="toggle-icon"
+          ></b-icon>
+        </div>
+
+        <div v-show="showFinishedContests" class="contests-grid">
+          <div
+            v-for="(contest, index) in contestsFinished"
+            :key="'fi' + index"
+            class="contest-card contest-card-finished"
+            @click="goContest(contest)"
+          >
+            <div class="card-header">
+              <div class="card-badge badge-finished">종료</div>
+              <div class="card-participants">
+                <b-icon icon="people-fill" class="icon-small"></b-icon>
+                {{ contest.participants_count }}
+              </div>
+            </div>
+
+            <div class="card-content">
+              <h3 class="card-title">{{ contest.title }}</h3>
+              <p class="card-subtitle">{{ makeGroupRequirementInfo(contest) }}</p>
+            </div>
+
+            <div class="card-footer">
+              <span class="time-info">
+                <b-icon icon="calendar-check" class="icon-small"></b-icon>
+                {{ contest.finishedTimeFromNow }}
+              </span>
+              <div class="card-action">
+                <b-icon icon="arrow-right" class="action-icon"></b-icon>
+              </div>
+            </div>
+
+            <div class="card-overlay"></div>
+          </div>
+        </div>
+
+        <b-pagination
+          v-show="showFinishedContests"
+          v-model="currentPage"
+          :per-page="perPage"
+          align="center"
+          :total-rows="contestsFinishedTotal"
+          class="pagination-custom"
+        />
+      </div>
     </div>
-    <b-modal id="modal-contest-information" size="xl">
+
+    <!-- Contest Information Modal -->
+    <b-modal
+      id="modal-contest-information"
+      size="xl"
+      centered
+      class="contest-modal"
+    >
+      <template #modal-header>
+        <h5 class="modal-title">경진대회 정보</h5>
+        <b-button variant="link" @click="$bvModal.hide('modal-contest-information')">
+          <b-icon icon="x-lg"></b-icon>
+        </b-button>
+      </template>
+
       <contest-information
-        :title="contestInformation.title" :requirements="contestInformation.requirements"
-        :constraints="contestInformation.constraints" :scoring="contestInformation.scoring"
-        :prizes="contestInformation.prizes" :description="contestInformation.description"
+        :title="contestInformation.title"
+        :requirements="contestInformation.requirements"
+        :constraints="contestInformation.constraints"
+        :scoring="contestInformation.scoring"
+        :prizes="contestInformation.prizes"
+        :description="contestInformation.description"
       >
       </contest-information>
+
       <template #modal-footer>
-        <b-button @click="goContest(contestInformation)">Go Contest</b-button>
+        <b-button variant="secondary" @click="$bvModal.hide('modal-contest-information')">
+          닫기
+        </b-button>
+        <b-button variant="primary" @click="goContest(contestInformation)">
+          경진대회 입장
+        </b-button>
       </template>
     </b-modal>
   </div>
 </template>
 
 <script>
+// 스크립트는 기존과 동일하게 유지
 import api from '@oj/api'
 import { mapGetters, mapActions } from 'vuex'
 import utils from '@/utils/utils'
 import time from '@/utils/time'
 import { CONTEST_STATUS_REVERSE, CONTEST_TYPE, CONTEST_STATUS } from '@/utils/constants'
-import NeonBox from '@oj/components/NeonBox.vue'
 import PageTop from '@oj/components/PageTop.vue'
 import ContestInformation from '@oj/components/ContestInformation.vue'
 import store from '@/store'
@@ -132,7 +321,6 @@ export default {
     }, 10000)
   },
   components: {
-    NeonBox,
     ContestInformation,
     PageTop
   },
@@ -166,7 +354,6 @@ export default {
 
       contestInformation: {},
       CONTEST_STATUS_REVERSE: CONTEST_STATUS_REVERSE,
-      // for password modal use
       cur_contest_id: '',
       contestListFields: [
         {
@@ -284,7 +471,6 @@ export default {
         })
         this.contestsUpcomingRendered += 10
         this.contestsUpcoming = this.contestsUpcoming.concat(res.data.data.results)
-      } else {
       }
     },
     async changeRoute () {
@@ -366,46 +552,520 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @font-face {
-    font-family: Manrope_bold;
-    src: url('../../../../fonts/Manrope-Bold.ttf');
-  }
+  // 색상 변수
+  $primary-blue: #4c6ef5;
+  $primary-dark-blue: #364fc7;
+  $primary-light-blue: #f0f3ff;
+  $primary-blue-shadow: rgba(76, 110, 245, 0.2);
+  $text-primary: #111111;
+  $text-secondary: #888888;
+  $text-light: #666666;
+  $bg-white: #ffffff;
+  $bg-light: #f8f9fa;
+  $border-light: #e9ecef;
+  $success-green: #51cf66;
+  $warning-yellow: #ffd43b;
+  $danger-red: #ff6b6b;
+
   .title-white {
-    color: white;
-  }
-  .title-gold {
-    color: #FEB144;
-  }
-  .subtitle-blue {
-    color: #1A3E51;
-    margin: 2rem 0 1rem 0;
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 2.5rem;
   }
 
-  .subtitle-red {
-    color: #FF6663;
-    margin: 2rem 0 1rem 0;
+  .title-gold {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 2.5rem;
   }
-  .subtitle-toggle {
-    display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
-    border: none;
-    background: none;
-  }
+
   .contest-list-container {
     margin: 0 auto;
-    width: 70%;
-    font-family: Manrope;
+    width: 100%;
+    max-width: 1200px;
+    padding: 3rem 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
-  .font-bold {
-    font-family: manrope_bold;
+
+  /* Section Header */
+  .contests-section {
+    margin-bottom: 3.5rem;
+    animation: fadeInUp 0.6s ease-out;
   }
-  #triangle-right {
-    width: 0;
-    height: 0;
-    margin-left: 4px;
-    border-top: 10px solid transparent;
-    border-left: 18px solid var(--main-color);
-    border-bottom: 10px solid transparent;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid $primary-blue;
+
+    .section-icon {
+      width: 28px;
+      height: 28px;
+      color: $primary-blue;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $text-primary;
+      margin: 0;
+    }
+
+    .contest-count {
+      margin-left: auto;
+      padding: 0.5rem 1rem;
+      background: $primary-light-blue;
+      color: $primary-blue;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .toggle-icon {
+      width: 24px;
+      height: 24px;
+      color: $primary-blue;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  /* Contest Grid */
+  .contests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Contest Card */
+  .contest-card {
+    position: relative;
+    background: $bg-white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid $border-light;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(76, 110, 245, 0.15);
+      border-color: $primary-blue;
+
+      .card-overlay {
+        opacity: 0.05;
+      }
+
+      .action-icon {
+        transform: translateX(4px);
+      }
+    }
+
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: $primary-blue;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+  }
+
+  .contest-card-active {
+    border-left: 4px solid $success-green;
+  }
+
+  .contest-card-upcoming {
+    border-left: 4px solid $warning-yellow;
+  }
+
+  .contest-card-finished {
+    border-left: 4px solid $text-light;
+  }
+
+  .contest-card-locked {
+    opacity: 0.7;
+    border-left: 4px solid $danger-red;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-badge {
+    display: inline-block;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .badge-active {
+    background: rgba(81, 207, 102, 0.1);
+    color: $success-green;
+  }
+
+  .badge-upcoming {
+    background: rgba(255, 212, 59, 0.1);
+    color: $warning-yellow;
+  }
+
+  .badge-finished {
+    background: rgba(102, 102, 102, 0.1);
+    color: $text-light;
+  }
+
+  .badge-locked {
+    background: rgba(255, 107, 107, 0.1);
+    color: $danger-red;
+  }
+
+  .card-participants {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: $text-light;
+    font-weight: 600;
+  }
+
+  .card-content {
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+  }
+
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  .card-subtitle {
+    font-size: 0.85rem;
+    color: $text-light;
+    margin: 0;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid $border-light;
+    position: relative;
+    z-index: 1;
+  }
+
+  .time-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: $text-light;
+
+    .icon-small {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .card-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: $primary-light-blue;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    .action-icon {
+      width: 18px;
+      height: 18px;
+      color: $primary-blue;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  /* Load More Button */
+  .load-more-btn {
+    display: block;
+    margin: 2rem auto 0;
+    padding: 0.85rem 2rem;
+    background: $bg-light;
+    color: $primary-blue;
+    border: 2px solid $primary-blue;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: $primary-blue;
+      color: $bg-white;
+      box-shadow: 0 8px 20px $primary-blue-shadow;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  /* Pagination */
+  .pagination-custom {
+    margin-top: 2rem;
+    justify-content: center;
+
+    ::v-deep .page-link {
+      color: $primary-blue;
+      border-color: $border-light;
+      border-radius: 6px;
+      margin: 0 0.25rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: $primary-light-blue;
+        color: $primary-blue;
+        border-color: $primary-blue;
+      }
+    }
+
+    ::v-deep .page-item.active .page-link {
+      background-color: $primary-blue;
+      border-color: $primary-blue;
+      color: $bg-white;
+      box-shadow: 0 4px 12px $primary-blue-shadow;
+    }
+  }
+
+  /* Modal */
+  ::v-deep .contest-modal {
+    .modal-content {
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(76, 110, 245, 0.15);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid $border-light;
+      background: $bg-light;
+      padding: 1.5rem;
+
+      .modal-title {
+        font-weight: 700;
+        color: $text-primary;
+      }
+    }
+
+    .modal-footer {
+      border-top: 1px solid $border-light;
+      background: $bg-light;
+      padding: 1.5rem;
+
+      .btn-primary {
+        background: $primary-blue;
+        border-color: $primary-blue;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: $primary-dark-blue;
+          border-color: $primary-dark-blue;
+          box-shadow: 0 4px 12px $primary-blue-shadow;
+        }
+      }
+
+      .btn-secondary {
+        color: $primary-blue;
+        border-color: $border-light;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: $primary-blue;
+          background: transparent;
+        }
+      }
+    }
+  }
+
+  /* 애니메이션 */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 반응형 디자인 */
+  @media (max-width: 1024px) {
+    .contest-list-container {
+      padding: 2rem 1.5rem;
+    }
+
+    .contests-grid {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .section-header {
+      .section-title {
+        font-size: 1.3rem;
+      }
+    }
+
+    .title-white,
+    .title-gold {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contest-list-container {
+      padding: 1.5rem 1rem;
+    }
+
+    .contests-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      border-bottom: 2px solid $primary-blue;
+
+      .contest-count {
+        margin-left: 0;
+      }
+
+      .toggle-icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+    }
+
+    .contest-card {
+      padding: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+    }
+
+    .title-white,
+    .title-gold {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .contest-list-container {
+      padding: 1rem 0.75rem;
+    }
+
+    .contests-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contests-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header {
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.5rem;
+
+      .section-title {
+        font-size: 1.1rem;
+      }
+
+      .section-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .contest-count {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    .contest-card {
+      padding: 1rem;
+    }
+
+    .card-header {
+      margin-bottom: 0.75rem;
+    }
+
+    .card-content {
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+    }
+
+    .card-footer {
+      padding-top: 0.75rem;
+    }
+
+    .time-info {
+      font-size: 0.8rem;
+    }
+
+    .card-participants {
+      font-size: 0.8rem;
+    }
+
+    .title-white,
+    .title-gold {
+      font-size: 1.3rem;
+    }
+
+    .load-more-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
   }
 </style>
