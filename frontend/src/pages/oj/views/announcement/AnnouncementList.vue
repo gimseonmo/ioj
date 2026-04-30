@@ -3,10 +3,10 @@
     <page-top>
       <template #title>
         <span class="title-icon">📢</span>
-        <span class="title-text">공지사항</span>
+        <span class="title-text" style="color: white;">공지사항</span>
       </template>
       <template #description>
-        최신 소식과 중요한 공지사항을 확인하세요
+        최신 공지사항을 확인해보세요
       </template>
     </page-top>
 

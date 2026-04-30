@@ -2,11 +2,11 @@
   <div>
     <page-top>
       <template #title>
-        <span class="title-white">🏆 INGENIOUS </span>
-        <span class="title-gold">CONTEST 🏅</span>
+        <span class="title-white" style="color: white;">🏆 INGENIOUS </span>
+        <span class="title-gold" style="color: white;">CONTEST 🏅</span>
       </template>
       <template #description>
-        최고의 프로그래밍 경진대회에 참가하세요!
+        대회를 확인해보세요
       </template>
     </page-top>
 

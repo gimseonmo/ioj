@@ -73,7 +73,6 @@
             <b-dropdown-item v-if="isAdminRole" @click="openWindow('/admin/')"
               >관리</b-dropdown-item
             >
-            <b-dropdown-item v-else v-b-modal.setting>Setting</b-dropdown-item>
             <b-dropdown-item to="/logout">로그아웃</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
@@ -132,7 +131,7 @@
                 class="green"
                 scale="0.9"
               />
-              You have solved the problem
+              이미 문제를 해결했습니다.
             </b-badge>
           </b-nav-item>
           <b-nav-item
