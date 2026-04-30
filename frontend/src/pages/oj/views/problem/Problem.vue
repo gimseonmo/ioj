@@ -2,7 +2,7 @@
   <div id="container">
     <b-overlay
       :show="overlayShow"
-      bg-color="#0B232F"
+      bg-color="#F8FBFF"
       spinner-variant="primary"
       spinner-type="grow"
       spinner-small
@@ -11,7 +11,7 @@
       <b-navbar id="main-header" type="dark">
         <b-navbar-brand to="/">
           <div class="logo-img">
-            <img src="@/assets/logos/logo.svg" alt="" />
+            <img src="@/assets/logos/logo.png" alt="Sindo High School" />
           </div>
         </b-navbar-brand>
 
@@ -28,7 +28,7 @@
           <b-nav-item>
             <b-icon icon="chevron-right" />
           </b-nav-item>
-          <b-nav-item to="#" active>{{ problem.title }}</b-nav-item>
+          <b-nav-item to="#" active >{{ problem.title }}</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav
@@ -71,10 +71,10 @@
               <b-icon icon="person" scale="1.5" />
             </template>
             <b-dropdown-item v-if="isAdminRole" @click="openWindow('/admin/')"
-              >Management</b-dropdown-item
+              >관리</b-dropdown-item
             >
             <b-dropdown-item v-else v-b-modal.setting>Setting</b-dropdown-item>
-            <b-dropdown-item to="/logout">Sign Out</b-dropdown-item>
+            <b-dropdown-item to="/logout">로그아웃</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-navbar>
@@ -159,7 +159,7 @@
             <b-button
               v-b-tooltip.hover
               class="btn-reset"
-              title="Click to reset your code"
+              title="리셋하기"
               @click="onResetToTemplate"
               data-cy="button-reset"
             >
@@ -179,7 +179,7 @@
               @click="submitCode"
               data-cy="button-submit"
             >
-              <span>Submit</span>
+              <span>제출하기</span>
             </b-button>
           </b-nav-item>
           <b-nav-item>
@@ -280,15 +280,30 @@
           </b-col>
         </vue-resizable>
         <b-col id="console">
-          <b-row id="editor">
-            <CodeMirror
-              ref="codemirror"
-              :value.sync="code"
-              :language="language"
-              :theme="theme"
-              :key="$route.fullPath"
-            />
-          </b-row>
+          <div class="editor-shell">
+            <div class="editor-panel-header">
+              <div class="editor-title">
+                <b-icon icon="code-slash" class="editor-title-icon" />
+                <div>
+                  <div class="editor-title-text">Code Editor</div>
+                  <div class="editor-meta">{{ language }} · {{ theme }}</div>
+                </div>
+              </div>
+              <div class="editor-status">
+                <b-icon icon="circle-fill" scale="0.75" />
+                Ready
+              </div>
+            </div>
+            <b-row id="editor">
+              <CodeMirror
+                ref="codemirror"
+                :value.sync="code"
+                :language="language"
+                :theme="theme"
+                :key="$route.fullPath"
+              />
+            </b-row>
+          </div>
           <!-- <b-row id="io">
             <b-row class="io-header">
               <b-col class="io-header-cell right-border">Input</b-col>
@@ -800,6 +815,14 @@ export default {
 
 $main-header-height: 60px;
 $inner-header-height: 58px;
+$primary-blue: #4c6ef5;
+$primary-dark-blue: #364fc7;
+$primary-light-blue: #f0f3ff;
+$primary-blue-shadow: rgba(76, 110, 245, 0.2);
+$text-primary: #111111;
+$text-secondary: #777777;
+$bg-white: #ffffff;
+$border-light: #e9ecef;
 
 * {
   font-family: "Manrope", sans-serif;
@@ -812,16 +835,13 @@ $inner-header-height: 58px;
 }
 
 #main-header {
-  background: #0b232f;
+  background: #bac1c8;
   height: #{$main-header-height};
 }
 
 .logo-img {
-  display: block;
-  width: 31px;
-  height: 36px;
-  filter: invert(100%) sepia(92%) saturate(0%) hue-rotate(62deg)
-    brightness(110%) contrast(101%);
+  width: 50px;
+  height: 50px;
 }
 
 #inner-header {
@@ -829,8 +849,9 @@ $inner-header-height: 58px;
   padding-top: 0px;
   padding-bottom: 0px;
   padding-left: 15px;
-  background: #173747;
-  border-bottom: 1px solid #3b4f56;
+  background: $bg-white;
+  border-bottom: 1px solid $border-light;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
   .menu-icon {
     margin-right: 10px;
@@ -842,8 +863,14 @@ $inner-header-height: 58px;
     }
 
     height: 58px;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid $primary-blue;
     font-size: 18px;
+  }
+
+  ::v-deep .navbar-nav .nav-link,
+  ::v-deep .navbar-nav .nav-link.active {
+    color: $text-primary;
+    font-weight: 600;
   }
 
   .statusBadge {
@@ -874,19 +901,82 @@ $inner-header-height: 58px;
   }
 
   .dropdown::v-deep button {
-    background: #45576c;
+    background: $bg-white;
+    border: 2px solid $border-light;
+    color: $text-primary;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+
+    &:hover,
+    &:focus {
+      background: $primary-light-blue;
+      border-color: $primary-blue;
+      color: $primary-dark-blue;
+      box-shadow: 0 4px 12px $primary-blue-shadow;
+    }
   }
 
   .dropdown::v-deep ul {
-    background: #45576c;
+    background: $bg-white;
+    border: 1px solid $border-light;
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 
     li a {
-      color: white;
+      color: $text-primary;
+      font-weight: 500;
     }
 
     li a:hover {
-      background: #2f3b49;
+      background: $primary-light-blue;
+      color: $primary-dark-blue;
     }
+  }
+}
+
+.btn-reset {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 8px;
+  border: 2px solid $border-light;
+  background: $bg-white;
+  color: $text-secondary;
+  transition: all 0.25s ease;
+
+  &:hover,
+  &:focus {
+    background: $primary-light-blue;
+    border-color: $primary-blue;
+    color: $primary-blue;
+    box-shadow: 0 4px 12px $primary-blue-shadow;
+  }
+}
+
+.btn-submit {
+  min-width: 100px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, $primary-blue 0%, $primary-dark-blue 100%);
+  color: $bg-white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px $primary-blue-shadow;
+  transition: all 0.25s ease;
+
+  &:hover,
+  &:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px $primary-blue-shadow;
+  }
+
+  &:disabled {
+    transform: none;
+    box-shadow: none;
+    opacity: 0.55;
+    cursor: not-allowed;
   }
 }
 
@@ -898,10 +988,10 @@ $inner-header-height: 58px;
   flex-wrap: nowrap;
 
   #problem-description {
-    background: #173747;
+    background: #F8FBFF;
     border-right: 1px solid #3b4f56;
     padding-left: 20px;
-    color: white;
+    color: black;
     height: calc(100vh - #{$main-header-height} - #{$inner-header-height});
     overflow: auto;
 
@@ -924,7 +1014,7 @@ $inner-header-height: 58px;
       }
 
       pre {
-        background: #24272d;
+        background: #F6F6F6;
         font-family: "Manrope", monospace;
       }
 
@@ -947,8 +1037,8 @@ $inner-header-height: 58px;
       min-height: 90px;
       padding: 12px;
       border-radius: 5px;
-      background: #24272d;
-      color: white;
+      background: #F6F6F6;
+      color: black;
     }
 
     .blank-line {
@@ -967,15 +1057,86 @@ $inner-header-height: 58px;
 
   #console {
     display: flex;
-    padding: 0;
+    padding: 18px;
     flex-flow: column;
-    background: #24272d;
+    background: #f8fbff;
     height: calc(100vh - #{$main-header-height} - #{$inner-header-height});
+
+    .editor-shell {
+      display: flex;
+      min-height: 0;
+      flex: 1 1 auto;
+      flex-direction: column;
+      overflow: hidden;
+      background: $bg-white;
+      border: 1px solid $border-light;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .editor-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid $border-light;
+      background: linear-gradient(135deg, #f0f3ff 0%, #e7f0ff 100%);
+      flex-shrink: 0;
+    }
+
+    .editor-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+
+    .editor-title-icon {
+      width: 36px;
+      height: 36px;
+      padding: 8px;
+      border-radius: 8px;
+      color: $bg-white;
+      background: linear-gradient(135deg, $primary-blue 0%, $primary-dark-blue 100%);
+      box-shadow: 0 2px 8px $primary-blue-shadow;
+      flex-shrink: 0;
+    }
+
+    .editor-title-text {
+      color: $text-primary;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .editor-meta {
+      color: $text-secondary;
+      font-size: 0.8rem;
+      font-weight: 500;
+      line-height: 1.3;
+      text-transform: capitalize;
+    }
+
+    .editor-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      background: $bg-white;
+      color: $primary-blue;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid rgba(76, 110, 245, 0.18);
+    }
 
     #editor {
       margin: 0;
       padding: 0;
       flex: 1 1 auto;
+      min-height: 0;
       overflow: auto;
     }
 
@@ -1010,7 +1171,7 @@ $inner-header-height: 58px;
 
       .io-content {
         flex: 1 1 auto;
-        color: white;
+        color: black;
 
         .io-content-cell {
           padding: 10px 15px;

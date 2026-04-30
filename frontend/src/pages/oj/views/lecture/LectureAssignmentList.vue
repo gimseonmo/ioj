@@ -34,8 +34,8 @@
           {{ getTimeFormat(data.row.end_time) }}
         </template>
         <template v-slot:accepted_problem="data">
-          <span v-if="data.row.accepted_problem === 0">Not Accepted</span>
-          <span v-else>{{ data.row.accepted_problem + '/' + data.row.total_problem + ' Accepted'}}</span>
+          <span v-if="data.row.accepted_problem === 0">아직 맞힌 문제가 없어요</span>
+          <span v-else>{{ data.row.accepted_problem + '/' + data.row.total_problem + ' 문제 해결'}}</span>
         </template>
       </Table>
 
@@ -85,7 +85,7 @@ export default {
         },
         {
           key: 'accepted_problem',
-          label: 'Accepted'
+          label: '해결한 문제'
         }
       ],
       assignments: [],

@@ -102,7 +102,7 @@ export default {
         color: white;
         border: none;
         border-radius: 10px;
-        background: #24272D;
+        background: #F6F6F6;
         box-shadow: 0px 0px 15px #000000;
 
         .modal-header {

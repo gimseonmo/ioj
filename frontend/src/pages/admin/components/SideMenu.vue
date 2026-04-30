@@ -4,7 +4,7 @@
       <img
         src="@/assets/logos/logo.png"
         style="height:35px; width:auto;"
-        alt="oj admin"
+        alt="Sindo High School admin"
       >
     </div>
     <b-list-group-item to="/">

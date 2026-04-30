@@ -6,7 +6,7 @@
         <img
           src="@/assets/logos/logo.png"
           class="logo-image"
-          alt="Logo"
+          alt="Sindo High School"
         />
       </a>
     </div>

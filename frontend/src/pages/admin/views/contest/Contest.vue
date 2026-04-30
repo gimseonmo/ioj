@@ -38,7 +38,7 @@
                 style="margin-top:16px"
                 v-b-popover.hover="`Short descriptions of who are eligible to participate in this contest.
                                     If there are multiple eligiblity requirement, split into multiple pieces.
-                                    Example: SKKU students enrolled this semester`"
+                                    Example: Sindo students enrolled this semester`"
               >
                 <span class="text-danger">*</span>
                 Eligibility for participation

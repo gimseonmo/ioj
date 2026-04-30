@@ -67,7 +67,7 @@
                     class="mr-2 text-light"
                     @click="showImportPublicProblemModal(row.item.id)"
                   >
-                    +problem<br>From SKKU coding platform
+                    +problem<br>From Sindo Online Judge
                   </b-button>
                   <b-button
                     size="sm"

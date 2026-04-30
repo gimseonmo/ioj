@@ -117,15 +117,24 @@ export default {
   #codemirror {
     width: 100%;
     height: 100%;
+    overflow: hidden;
   }
   .CodeMirror * {
     font-family: Menlo, Monaco, Consolas,"Courier New", monospace
   }
   .CodeMirror {
     height: 100% !important;
+    font-size: 14px;
+    line-height: 1.65;
   }
   .CodeMirror-scroll {
     min-height: 300px;
     max-height: 100%;
+  }
+  .CodeMirror-gutters {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .CodeMirror-linenumber {
+    padding: 0 12px 0 8px;
   }
 </style>

@@ -434,7 +434,8 @@ export default {
       })
     },
     resultTextColor (result) {
-      return result === 'Accepted' ? '#8DC63F' : '#FF4F28'
+      const status = Object.values(JUDGE_STATUS).find(item => item.name === result)
+      return status && status.type === 'success' ? '#8DC63F' : '#FF4F28'
     },
     async onMySubmissionClicked (item) {
       await this.getSubmissionDetail(item.ID)
@@ -466,7 +467,7 @@ export default {
           }
         )
       }
-      this.compile_error_message_show = data.result === 'Compile Error'
+      this.compile_error_message_show = data.result === JUDGE_STATUS[-2].name
 
       if (data.info && data.info.data) {
         // score exist means the submission is OI problem submission
@@ -506,7 +507,7 @@ export default {
   #sidebar-container {
     overflow: auto;
     height: 100%;
-    background: #24272D;
+    background: #F6F6F6;
     color: white;
 
     .sidebar-row {
@@ -551,7 +552,7 @@ export default {
         color: white;
         border: none;
         border-radius: 10px;
-        background: #24272D;
+        background: #F6F6F6;
         box-shadow: 0px 0px 15px #000000;
 
         .modal-header {
@@ -614,7 +615,7 @@ export default {
     margin-left: 25px;
 
     .page-link {
-      background: #24272D;
+      background: #F6F6F6;
       border-color: #3B4F56;
       color: white;
     }

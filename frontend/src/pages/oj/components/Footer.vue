@@ -1,14 +1,8 @@
 <template>
   <footer id="footer">
     <div class="footer-info">
-      <div class="icons flex">
-        <a v-clipboard:copy="email" @click="copy"><img :src="mail" /></a>
-        <a href="https://github.com/skkuding/skku-coding-platform"><img :src="github" /></a>
-        <a href="http://pf.kakao.com/_UKraK/chat"><img :src="kakao" /></a>
-        <a href="https://npc.skku.edu"><img :src="link" /></a>
-      </div>
       <div class="footer-bottom">
-        <span> © 2026, INGENIOUS Online Judge</span>
+        <span> © 2026, IOJ by Ingenious @ Shindo High School</span>
       </div>
     </div>
   </footer>
@@ -20,7 +14,7 @@ export default {
   data () {
     return {
       version: process.env.VERSION,
-      email: 'example@skku.edu',
+      email: 'contact@sindo-oj.local',
       kakao: require('@/assets/icons/kakao.svg'),
       link: require('@/assets/icons/link.svg'),
       github: require('@/assets/icons/github.svg'),

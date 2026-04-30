@@ -72,9 +72,9 @@ export default {
   },
   data () {
     return {
-      // title: '2021 Spring SKKU 프로그래밍 대회 in 소프트의 밤',
+      // title: 'Sindo Programming Contest',
       // requirements: [
-      //   'SKKU undergrate enrolled 2021 Spring'
+      //   'Sindo students enrolled this semester'
       // ],
       // constraints: [
       //   'Not Awarded in same past competition'

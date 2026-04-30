@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="import-public-problem-modal" @ok="goCreateProblem" title="Add problem from SKKU coding platform" size="xl" class="font-bold">
+  <b-modal id="import-public-problem-modal" @ok="goCreateProblem" title="Add problem from Sindo Online Judge" size="xl" class="font-bold">
     <div class="top-bar mb-4" style="margin-top:4px;">
       <h2 class="title">Problem List</h2>
       <div class="problem-list-table">

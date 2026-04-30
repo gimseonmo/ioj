@@ -5,7 +5,7 @@
         <!-- 로고 섹션 -->
         <div class="logo-section">
           <div class="logo-img">
-            <img src="@/assets/logos/logo.svg" alt="SKKU Coding Platform"/>
+            <img src="@/assets/logos/logo.svg" alt="Sindo High School"/>
           </div>
           <p class="welcome-text">환영합니다! 로그인하세요</p>
         </div>

@@ -7,21 +7,21 @@ module.exports = {
       entry: './src/pages/oj/index.js',
       template: './src/pages/oj/index.html',
       filename: 'index.html',
-      title: 'SKKU Coding Platform',
+      title: 'Sindo Online Judge',
       chunks: ['chunk-vendors', 'chunk-common', 'oj']
     },
     admin: {
       entry: './src/pages/admin/index.js',
       template: './src/pages/admin/index.html',
       filename: 'admin/index.html',
-      title: 'SKKU Coding Platform Admin',
+      title: 'Sindo Online Judge Admin',
       chunks: ['chunk-vendors', 'chunk-common', 'admin']
     },
     professor: {
       entry: './src/pages/professor/index.js',
       template: './src/pages/professor/index.html',
       filename: 'professor/index.html',
-      title: 'SKKU Coding Platform Professor',
+      title: 'Sindo Online Judge Professor',
       chunks: ['chunk-vendors', 'chunk-common', 'professor']
     }
   },

@@ -96,8 +96,8 @@
               </b-modal>
             </b-col>
           </b-row>
-
           <b-row>
+            <div style="color: black;">
             <b-col cols="4">
               <p class="labels">
                 <span class="text-danger">*</span> Time Limit (ms)
@@ -117,7 +117,7 @@
                 placeholder="Memory Limit"
                 type="number"
               ></b-form-input>
-            </b-col>
+            </b-col></div>
             <b-col cols="2">
               <p class="labels">
                 Difficulty

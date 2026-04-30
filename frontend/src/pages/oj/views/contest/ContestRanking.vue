@@ -94,7 +94,7 @@ export default {
       this.contestProblemID.push((contestProblem.id) + '')
       this.contestRankingListFields.push({ key: contestProblem.id + '', label: contestProblem._id })
     }
-    this.contestRankingListFields.push({ key: 'accepted_number', label: 'AC' })
+    this.contestRankingListFields.push({ key: 'accepted_number', label: '맞힌 문제 수' })
 
     await this.getContestRanking()
     this.total = this.contestRankingList.length

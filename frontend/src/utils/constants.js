@@ -1,70 +1,73 @@
 export const JUDGE_STATUS = {
   '-2': {
-    name: 'Compile Error',
-    short: 'CE',
+    name: '컴파일 오류가 발생했어요',
+    short: '컴파일 오류',
     color: 'yellow',
     type: 'warning'
   },
   '-1': {
-    name: 'Wrong Answer',
-    short: 'WA',
+    name: '정답과 출력이 달라요',
+    short: '오답',
     color: 'red',
     type: 'error'
   },
   0: {
-    name: 'Accepted',
-    short: 'AC',
+    name: '정답이에요',
+    short: '정답',
     color: 'green',
     type: 'success'
   },
   1: {
-    name: 'Time Limit Exceeded',
-    short: 'TLE',
+    name: '실행 시간이 너무 오래 걸렸어요',
+    short: '시간 초과',
     color: 'red',
     type: 'error'
   },
   2: {
-    name: 'Time Limit Exceeded',
-    short: 'TLE',
+    name: '실행 시간이 너무 오래 걸렸어요',
+    short: '시간 초과',
     color: 'red',
     type: 'error'
   },
   3: {
-    name: 'Memory Limit Exceeded',
-    short: 'MLE',
+    name: '메모리를 너무 많이 사용했어요',
+    short: '메모리 초과',
     color: 'red',
     type: 'error'
   },
   4: {
-    name: 'Runtime Error',
-    short: 'RE',
+    name: '실행 중 오류가 발생했어요',
+    short: '런타임 오류',
     color: 'red',
     type: 'error'
   },
   5: {
-    name: 'System Error',
-    short: 'SE',
+    name: '채점 시스템 오류가 발생했어요',
+    short: '시스템 오류',
     color: 'red',
     type: 'error'
   },
   6: {
-    name: 'Pending',
+    name: '채점을 기다리고 있어요',
+    short: '대기 중',
     color: 'yellow',
     type: 'warning'
   },
   7: {
-    name: 'Judging',
+    name: '채점 중이에요',
+    short: '채점 중',
     color: 'blue',
     type: 'info'
   },
   8: {
-    name: 'Partial Accepted',
-    short: 'PAC',
+    name: '일부 테스트만 맞았어요',
+    short: '부분 정답',
     color: 'blue',
     type: 'info'
   },
   9: {
-    name: 'Submitting',
+    name: '제출하고 있어요',
+    short: '제출 중',
     color: 'yellow',
     type: 'warning'
   }
