@@ -3,6 +3,7 @@
     <div class="footer-info">
       <div class="footer-bottom">
         <span> © 2026, IOJ by Ingenious @ Shindo High School</span>
+        <span>마지막 수정 : 2026년 05월 01일 15:12</span>
       </div>
     </div>
   </footer>
