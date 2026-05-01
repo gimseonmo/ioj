@@ -97,11 +97,6 @@
 
       <b-navbar id="inner-header" type="dark">
         <b-navbar-nav>
-          <b-nav-item class="menu-icon" active>
-            <b-icon icon="list" scale="1.4" v-b-toggle.sidebar />
-          </b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav>
           <b-nav-item to="#" class="active-link problem-title" active>
             {{ problem.title }}
           </b-nav-item>
@@ -229,19 +224,19 @@
         >
           <b-col id="problem-description">
             <div class="description-io">
-              <h2>Description</h2>
+              <h2>설명</h2>
               <p v-dompurify-html="problem.description" v-katex:auto></p>
               <div class="blank-line"></div>
-              <h2>Input</h2>
+              <h2>입력</h2>
               <p v-dompurify-html="problem.input_description" v-katex:auto></p>
-              <h2>Output</h2>
+              <h2>출력</h2>
               <p v-dompurify-html="problem.output_description" v-katex:auto></p>
               <div class="blank-line"></div>
             </div>
 
             <div v-for="(sample, index) of problem.samples" :key="index">
               <h2>
-                Sample Input {{ index + 1 }}
+                샘플 입력 {{ index + 1 }}
                 <a v-clipboard:copy="sample.input">
                   <b-icon
                     id="clipboard1"
@@ -255,7 +250,7 @@
                 </b-tooltip>
               </h2>
               <pre class="sample-io">{{ sample.input }}</pre>
-              <h2>Sample Output {{ index + 1 }}</h2>
+              <h2>샘플 출력 {{ index + 1 }}</h2>
               <pre class="sample-io">{{ sample.output }}</pre>
               <div class="blank-line"></div>
             </div>
@@ -267,9 +262,10 @@
             <Table
               :items="problemInfo"
               :fields="problemInfoField"
+              class="custom-oj-table"
               lightStyle
             >
-              <template v-slot:time_limit="data">
+              <template v-slot:time_limit="data" style="color: black;">
                 {{data.row.time_limit}}
               </template>
               <template v-slot:memory_limit="data">
@@ -805,7 +801,18 @@ export default {
   }
 }
 </script>
+<style scoped>
+.custom-oj-table {
+  background-color: #F6F6F6 !important; /* 테이블 배경 회색 */
+  color: #000000 !important;             /* 전체 글자 검은색 */
+}
 
+/* 테이블 내부의 모든 글자를 검은색으로 강제하고 싶을 때 */
+.custom-oj-table >>> td,
+.custom-oj-table >>> th {
+  color: #000000 !important;
+}
+</style>
 <style lang="scss" scoped>
 @font-face {
   font-family: "Manrope";
