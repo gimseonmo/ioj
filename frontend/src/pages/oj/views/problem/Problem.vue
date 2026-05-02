@@ -1136,18 +1136,18 @@ $border-light: #e9ecef;
   height: 40px;
   padding: 0 0.85rem;
   border-radius: 8px;
-  border: 2px solid #d8f0e4;
-  background: #f4fbf7;
-  color: #1f7a4d;
+  border: 2px solid rgba(76, 110, 245, 0.22);
+  background: $primary-light-blue;
+  color: $primary-dark-blue;
   font-weight: 700;
   transition: all 0.25s ease;
 
   &:hover,
   &:focus {
-    background: #e8f7ef;
-    border-color: #2f9e62;
-    color: #14613d;
-    box-shadow: 0 4px 12px rgba(47, 158, 98, 0.18);
+    background: #e7f0ff;
+    border-color: $primary-blue;
+    color: $primary-dark-blue;
+    box-shadow: 0 4px 12px $primary-blue-shadow;
   }
 
   &:disabled {
@@ -1185,6 +1185,21 @@ $border-light: #e9ecef;
   background: #f8fbff;
 }
 
+::v-deep #ai-tutor-sidebar {
+  .b-sidebar-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid $border-light;
+    background: linear-gradient(135deg, #f0f3ff 0%, #e7f0ff 100%);
+    color: $text-primary;
+    font-weight: 800;
+  }
+
+  .close {
+    color: $primary-dark-blue;
+    opacity: 0.8;
+  }
+}
+
 .ai-tutor-panel {
   display: flex;
   min-height: 100%;
@@ -1203,7 +1218,15 @@ $border-light: #e9ecef;
     align-items: center;
     gap: 0.4rem;
     border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, $primary-blue 0%, $primary-dark-blue 100%);
+    box-shadow: 0 4px 12px $primary-blue-shadow;
     font-weight: 700;
+
+    &:hover,
+    &:focus {
+      box-shadow: 0 8px 20px $primary-blue-shadow;
+    }
   }
 }
 
@@ -1222,17 +1245,49 @@ $border-light: #e9ecef;
   padding-top: 1rem;
 }
 
+::v-deep .ai-tutor-panel {
+  .nav-pills {
+    display: flex;
+    gap: 0.45rem;
+    padding: 0.35rem;
+    border: 1px solid $border-light;
+    border-radius: 8px;
+    background: $bg-white;
+  }
+
+  .nav-pills .nav-item {
+    flex: 1 1 0;
+  }
+
+  .nav-pills .nav-link {
+    width: 100%;
+    border-radius: 6px;
+    color: $text-secondary;
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .nav-pills .nav-link.active {
+    background: $primary-blue;
+    color: $bg-white;
+    box-shadow: 0 3px 10px $primary-blue-shadow;
+  }
+}
+
 .ai-tutor-section {
   padding: 1rem;
-  border: 1px solid $border-light;
+  border: 1px solid rgba(76, 110, 245, 0.16);
   border-radius: 8px;
   background: $bg-white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   line-height: 1.65;
   white-space: pre-line;
 
   h3 {
     margin: 0 0 0.85rem;
-    color: $text-primary;
+    color: $primary-dark-blue;
     font-size: 1rem;
     font-weight: 800;
   }
