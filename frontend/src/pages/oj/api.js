@@ -445,7 +445,9 @@ async function ajax (url, method, options) {
     }
   } catch (err) {
     if (!err || !err._handled) {
-      Vue.prototype.$error(getAjaxErrorMessage(err))
+      if (window.location.pathname !== '/logout') {
+        Vue.prototype.$error(getAjaxErrorMessage(err))
+      }
     }
     throw err
   }
