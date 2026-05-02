@@ -37,7 +37,7 @@ class GeminiProvider(BaseLLMProvider):
             ],
             "generationConfig": {
                 "temperature": 0.2,
-                "maxOutputTokens": 1200,
+                "maxOutputTokens": 2048,
                 "responseMimeType": "application/json",
             },
         }
@@ -102,11 +102,25 @@ class OpenAIProvider(BaseLLMProvider):
 
 def parse_json_text(text):
     text = text.strip()
+    if not text:
+        raise ValueError("empty response")
+
     if text.startswith("```"):
-        text = text.strip("`").strip()
-        if text.startswith("json"):
-            text = text[4:].strip()
-    return json.loads(text)
+        lines = text.splitlines()
+        if lines and lines[0].startswith("```"):
+            lines = lines[1:]
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+
+    try:
+        return json.loads(text)
+    except ValueError:
+        start = text.find("{")
+        end = text.rfind("}")
+        if start == -1 or end == -1 or start >= end:
+            raise
+        return json.loads(text[start:end + 1])
 
 
 def get_default_provider():
