@@ -218,6 +218,12 @@ export default {
       data
     })
   },
+  getAITutorHelp (data) {
+    return ajax('ai-tutor', 'post', {
+      data,
+      silent: true
+    })
+  },
   getSubmissionList (offset, limit, params) {
     params.limit = limit
     params.offset = offset
@@ -412,9 +418,10 @@ export default {
  */
 async function ajax (url, method, options) {
   if (options !== undefined) {
-    var { params = {}, data = {} } = options
+    var { params = {}, data = {}, silent = false } = options
   } else {
     params = data = {}
+    silent = false
   }
   try {
     const res = await axios({
@@ -430,13 +437,31 @@ async function ajax (url, method, options) {
       }
       throw res
     } else {
-      if (method !== 'get') {
+      if (method !== 'get' && !silent) {
         Vue.prototype.$success('Succeeded')
       }
       return res
     }
   } catch (err) {
-    Vue.prototype.$error(err.data.data)
+    Vue.prototype.$error(getAjaxErrorMessage(err))
     throw err
   }
+}
+
+function getAjaxErrorMessage (err) {
+  if (err && err.data && err.data.data) {
+    return err.data.data
+  }
+  if (err && err.response && err.response.data) {
+    if (err.response.data.data) {
+      return err.response.data.data
+    }
+    if (typeof err.response.data === 'string') {
+      return err.response.data
+    }
+  }
+  if (err && err.message) {
+    return err.message
+  }
+  return 'Request failed'
 }

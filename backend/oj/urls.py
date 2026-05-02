@@ -16,6 +16,7 @@ urlpatterns = [
     path("api/", include("contest.urls.oj")),
     path("api/admin/", include("contest.urls.admin")),
     path("api/", include("submission.urls")),
+    path("api/", include("ai_tutor.urls")),
     path("api/admin/", include("utils.urls")),
     path("api/", include("banner.urls.oj")),
     path("api/admin/", include("banner.urls.admin")),

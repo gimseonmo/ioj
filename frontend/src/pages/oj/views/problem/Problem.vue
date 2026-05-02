@@ -160,6 +160,19 @@
               <b-icon icon="arrow-clockwise" scale="1.1" />
             </b-button>
           </b-nav-item>
+          <b-nav-item>
+            <b-button
+              v-b-tooltip.hover
+              class="btn-ai-tutor"
+              title="AI 튜터"
+              :disabled="aiTutorLoading"
+              @click="openAITutor"
+            >
+              <b-spinner v-if="aiTutorLoading" small />
+              <b-icon v-else icon="lightbulb" scale="1.05" />
+              <span>AI 튜터</span>
+            </b-button>
+          </b-nav-item>
           <!-- <b-nav-item>
             <b-button class="btn">
               <b-icon icon="play" scale="1.4"/>
@@ -327,6 +340,71 @@
           />
         </template>
       </b-sidebar>
+      <b-sidebar
+        id="ai-tutor-sidebar"
+        v-model="aiTutorVisible"
+        title="AI 튜터"
+        right
+        shadow
+        backdrop
+        width="460px"
+        body-class="ai-tutor-sidebar-body"
+      >
+        <div class="ai-tutor-panel">
+          <div class="ai-tutor-actions">
+            <b-button
+              size="sm"
+              variant="primary"
+              :disabled="aiTutorLoading"
+              @click="requestAITutor"
+            >
+              <b-spinner v-if="aiTutorLoading" small />
+              <b-icon v-else icon="arrow-clockwise" />
+              다시 분석
+            </b-button>
+          </div>
+
+          <b-alert v-if="aiTutorError" show variant="danger">
+            {{ aiTutorError }}
+          </b-alert>
+
+          <div v-if="aiTutorLoading" class="ai-tutor-loading">
+            <b-spinner variant="primary" />
+            <span>AI 튜터가 코드를 분석하고 있습니다.</span>
+          </div>
+
+          <b-tabs v-else content-class="ai-tutor-tab-content" pills>
+            <b-tab title="디버깅" active>
+              <div class="ai-tutor-section">
+                <h3>버그 분석</h3>
+                <p>{{ aiTutorResult.bug_analysis || '아직 분석 결과가 없습니다.' }}</p>
+              </div>
+            </b-tab>
+            <b-tab title="테스트">
+              <div class="ai-tutor-section">
+                <h3>숨은 테스트 케이스</h3>
+                <ol v-if="aiTutorResult.test_cases.length">
+                  <li v-for="(testCase, index) in aiTutorResult.test_cases" :key="index">
+                    {{ testCase }}
+                  </li>
+                </ol>
+                <p v-else>아직 생성된 테스트 케이스가 없습니다.</p>
+              </div>
+            </b-tab>
+            <b-tab title="풀이 단계">
+              <div class="ai-tutor-section">
+                <h3>단계별 풀이 가이드</h3>
+                <ol v-if="aiTutorResult.steps.length">
+                  <li v-for="(step, index) in aiTutorResult.steps" :key="index">
+                    {{ step }}
+                  </li>
+                </ol>
+                <p v-else>아직 생성된 풀이 단계가 없습니다.</p>
+              </div>
+            </b-tab>
+          </b-tabs>
+        </div>
+      </b-sidebar>
     </b-overlay>
   </div>
 </template>
@@ -417,7 +495,15 @@ export default {
       theme_list: ['solarized', 'monokai', 'material'],
 
       overlayShow: false,
-      problemWidth: undefined
+      problemWidth: undefined,
+      aiTutorVisible: false,
+      aiTutorLoading: false,
+      aiTutorError: '',
+      aiTutorResult: {
+        bug_analysis: '',
+        test_cases: [],
+        steps: []
+      }
     }
   },
   async mounted () {
@@ -687,6 +773,87 @@ export default {
       await this.$refs.sidebar.onMySubmissionClicked({ ID: this.submissionId })
       await this.$nextTick()
       this.$refs.sidebar.codemirror_key += 1
+    },
+    async openAITutor () {
+      if (!this.isAuthenticated) {
+        this.changeModalStatus({ visible: true, mode: 'login' })
+        return
+      }
+      this.aiTutorVisible = true
+      if (!this.aiTutorResult.bug_analysis && !this.aiTutorLoading) {
+        await this.requestAITutor()
+      }
+    },
+    async requestAITutor () {
+      if (!this.isAuthenticated) {
+        this.changeModalStatus({ visible: true, mode: 'login' })
+        return
+      }
+      this.aiTutorLoading = true
+      this.aiTutorError = ''
+      try {
+        const res = await api.getAITutorHelp({
+          problem: this.buildAITutorProblemText(),
+          code: this.code,
+          error_log: this.buildAITutorErrorLog()
+        })
+        const result = res.data.data || {}
+        this.aiTutorResult = {
+          bug_analysis: result.bug_analysis || '',
+          test_cases: Array.isArray(result.test_cases) ? result.test_cases : [],
+          steps: Array.isArray(result.steps) ? result.steps : []
+        }
+      } catch (err) {
+        this.aiTutorError = this.getRequestErrorMessage(err)
+      } finally {
+        this.aiTutorLoading = false
+      }
+    },
+    buildAITutorProblemText () {
+      const samples = (this.problem.samples || [])
+        .map((sample, index) => {
+          return `샘플 ${index + 1}\n입력:\n${sample.input}\n출력:\n${sample.output}`
+        })
+        .join('\n\n')
+      return [
+        `제목: ${this.problem.title}`,
+        `설명: ${this.stripHtml(this.problem.description || '')}`,
+        `입력: ${this.stripHtml(this.problem.input_description || '')}`,
+        `출력: ${this.stripHtml(this.problem.output_description || '')}`,
+        this.problem.hint ? `힌트: ${this.stripHtml(this.problem.hint)}` : '',
+        samples
+      ].filter(Boolean).join('\n\n')
+    },
+    buildAITutorErrorLog () {
+      const status = this.result && JUDGE_STATUS[this.result.result]
+        ? JUDGE_STATUS[this.result.result].name
+        : ''
+      return [
+        `언어: ${this.language}`,
+        status ? `최근 제출 상태: ${status}` : ''
+      ].filter(Boolean).join('\n')
+    },
+    stripHtml (value) {
+      const div = document.createElement('div')
+      div.innerHTML = value
+      return div.textContent || div.innerText || ''
+    },
+    getRequestErrorMessage (err) {
+      if (err && err.data && err.data.data) {
+        return err.data.data
+      }
+      if (err && err.response && err.response.data) {
+        if (err.response.data.data) {
+          return err.response.data.data
+        }
+        if (typeof err.response.data === 'string') {
+          return err.response.data
+        }
+      }
+      if (err && err.message) {
+        return err.message
+      }
+      return 'AI 튜터 요청에 실패했습니다.'
     },
     async goAssignmentList () {
       await this.$router.push({
@@ -961,6 +1128,34 @@ $border-light: #e9ecef;
   }
 }
 
+.btn-ai-tutor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 102px;
+  height: 40px;
+  padding: 0 0.85rem;
+  border-radius: 8px;
+  border: 2px solid #d8f0e4;
+  background: #f4fbf7;
+  color: #1f7a4d;
+  font-weight: 700;
+  transition: all 0.25s ease;
+
+  &:hover,
+  &:focus {
+    background: #e8f7ef;
+    border-color: #2f9e62;
+    color: #14613d;
+    box-shadow: 0 4px 12px rgba(47, 158, 98, 0.18);
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+}
+
 .btn-submit {
   min-width: 100px;
   height: 40px;
@@ -983,6 +1178,80 @@ $border-light: #e9ecef;
     box-shadow: none;
     opacity: 0.55;
     cursor: not-allowed;
+  }
+}
+
+::v-deep .ai-tutor-sidebar-body {
+  background: #f8fbff;
+}
+
+.ai-tutor-panel {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  color: $text-primary;
+}
+
+.ai-tutor-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+}
+
+.ai-tutor-loading {
+  display: flex;
+  min-height: 180px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.85rem;
+  color: $text-secondary;
+  font-weight: 700;
+}
+
+.ai-tutor-tab-content {
+  padding-top: 1rem;
+}
+
+.ai-tutor-section {
+  padding: 1rem;
+  border: 1px solid $border-light;
+  border-radius: 8px;
+  background: $bg-white;
+  line-height: 1.65;
+  white-space: pre-line;
+
+  h3 {
+    margin: 0 0 0.85rem;
+    color: $text-primary;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #343a40;
+    font-size: 0.92rem;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  li {
+    margin-bottom: 0.8rem;
+    color: #343a40;
+    font-size: 0.92rem;
   }
 }
 

@@ -50,7 +50,8 @@ LOCAL_APPS = [
     'assignment',
     'course',
     'group',
-    'qna'
+    'qna',
+    'ai_tutor'
 ]
 
 INSTALLED_APPS = VENDOR_APPS + LOCAL_APPS
@@ -206,6 +207,16 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
+AI_TUTOR_PROVIDER = get_env("AI_TUTOR_PROVIDER", "gemini")
+GEMINI_API_KEY = get_env("GEMINI_API_KEY", "")
+GEMINI_MODEL = get_env("GEMINI_MODEL", "gemini-1.5-flash")
+OPENAI_API_KEY = get_env("OPENAI_API_KEY", "")
+OPENAI_MODEL = get_env("OPENAI_MODEL", "gpt-4o-mini")
+AI_TUTOR_TIMEOUT = int(get_env("AI_TUTOR_TIMEOUT", "15"))
+AI_TUTOR_CACHE_SECONDS = int(get_env("AI_TUTOR_CACHE_SECONDS", "3600"))
+AI_TUTOR_RATE_LIMIT = int(get_env("AI_TUTOR_RATE_LIMIT", "20"))
+AI_TUTOR_RATE_WINDOW_SECONDS = int(get_env("AI_TUTOR_RATE_WINDOW_SECONDS", "3600"))
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
