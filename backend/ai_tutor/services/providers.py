@@ -7,6 +7,28 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+AI_TUTOR_RESPONSE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "bug_analysis": {
+            "type": "string",
+        },
+        "test_cases": {
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+        "steps": {
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+        },
+    },
+    "required": ["bug_analysis", "test_cases", "steps"],
+}
+
 
 class LLMProviderError(Exception):
     pass
@@ -39,6 +61,7 @@ class GeminiProvider(BaseLLMProvider):
                 "temperature": 0.2,
                 "maxOutputTokens": 2048,
                 "responseMimeType": "application/json",
+                "responseSchema": AI_TUTOR_RESPONSE_SCHEMA,
             },
         }
         try:
@@ -55,8 +78,18 @@ class GeminiProvider(BaseLLMProvider):
 
         try:
             data = response.json()
-            text = data["candidates"][0]["content"]["parts"][0]["text"]
+            candidate = data["candidates"][0]
+            finish_reason = candidate.get("finishReason")
+            if finish_reason and finish_reason not in ("STOP", "MAX_TOKENS"):
+                logger.warning("Gemini stopped with finish reason: %s", finish_reason)
+                raise LLMProviderError("AI 튜터가 이 문제에 대한 응답을 생성하지 못했습니다")
+            if finish_reason == "MAX_TOKENS":
+                logger.warning("Gemini response reached max tokens")
+                raise LLMProviderError("AI 튜터 응답이 너무 길어졌습니다. 코드를 조금 줄이거나 다시 시도해주세요")
+            text = candidate["content"]["parts"][0]["text"]
             return parse_json_text(text)
+        except LLMProviderError:
+            raise
         except (KeyError, IndexError, TypeError, ValueError) as e:
             logger.warning("Invalid Gemini response: %s", e)
             raise LLMProviderError("AI 튜터 응답 형식이 올바르지 않습니다")
