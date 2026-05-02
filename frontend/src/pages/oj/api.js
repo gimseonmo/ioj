@@ -432,9 +432,10 @@ async function ajax (url, method, options) {
     })
     if (res.data.error !== null) {
       Vue.prototype.$error(res.data.data)
-      if (res.data.data.startsWith('Please login')) {
+      if (typeof res.data.data === 'string' && res.data.data.startsWith('Please login')) {
         store.dispatch('changeModalStatus', { mode: 'login', visible: true })
       }
+      res._handled = true
       throw res
     } else {
       if (method !== 'get' && !silent) {
@@ -443,7 +444,9 @@ async function ajax (url, method, options) {
       return res
     }
   } catch (err) {
-    Vue.prototype.$error(getAjaxErrorMessage(err))
+    if (!err || !err._handled) {
+      Vue.prototype.$error(getAjaxErrorMessage(err))
+    }
     throw err
   }
 }
@@ -457,10 +460,19 @@ function getAjaxErrorMessage (err) {
       return err.response.data.data
     }
     if (typeof err.response.data === 'string') {
+      if (err.response.data.indexOf('Bad Request') !== -1) {
+        return '요청이 올바르지 않습니다. 새로고침 후 다시 시도해주세요.'
+      }
       return err.response.data
     }
   }
+  if (err && err.response && err.response.status === 400) {
+    return '요청이 올바르지 않습니다. 새로고침 후 다시 시도해주세요.'
+  }
   if (err && err.message) {
+    if (err.message.indexOf('400') !== -1 || err.message.indexOf('Bad Request') !== -1) {
+      return '요청이 올바르지 않습니다. 새로고침 후 다시 시도해주세요.'
+    }
     return err.message
   }
   return 'Request failed'
