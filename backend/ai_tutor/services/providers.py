@@ -7,6 +7,8 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash-lite"
+
 AI_TUTOR_RESPONSE_SCHEMA = {
     "type": "object",
     "properties": {
@@ -42,7 +44,7 @@ class BaseLLMProvider(object):
 class GeminiProvider(BaseLLMProvider):
     def __init__(self, api_key=None, model=None, timeout=None):
         self.api_key = api_key or settings.GEMINI_API_KEY
-        self.model = model or settings.GEMINI_MODEL
+        self.model = normalize_gemini_model(model or settings.GEMINI_MODEL)
         self.timeout = timeout or settings.AI_TUTOR_TIMEOUT
 
     def generate_json(self, prompt):
@@ -154,6 +156,20 @@ def parse_json_text(text):
         if start == -1 or end == -1 or start >= end:
             raise
         return json.loads(text[start:end + 1])
+
+
+def normalize_gemini_model(model):
+    model = (model or "").strip()
+    if not model:
+        return DEFAULT_GEMINI_MODEL
+    if model.startswith("gemini-1.5-"):
+        logger.warning(
+            "Deprecated Gemini model %s configured; using %s for AI tutor",
+            model,
+            DEFAULT_GEMINI_MODEL,
+        )
+        return DEFAULT_GEMINI_MODEL
+    return model
 
 
 def get_default_provider():

@@ -210,7 +210,7 @@ SESSION_CACHE_ALIAS = "default"
 
 AI_TUTOR_PROVIDER = get_env("AI_TUTOR_PROVIDER", "gemini")
 GEMINI_API_KEY = get_env("GEMINI_API_KEY", "")
-GEMINI_MODEL = get_env("GEMINI_MODEL", "gemini-1.5-flash")
+GEMINI_MODEL = get_env("GEMINI_MODEL", "gemini-2.5-flash-lite")
 OPENAI_API_KEY = get_env("OPENAI_API_KEY", "")
 OPENAI_MODEL = get_env("OPENAI_MODEL", "gpt-4o-mini")
 AI_TUTOR_TIMEOUT = int(get_env("AI_TUTOR_TIMEOUT", "15"))

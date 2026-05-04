@@ -186,6 +186,12 @@ export default {
     return ajax('edit_submission_score/', 'put', {
       data
     })
+  },
+  getAITutorHelp (data) {
+    return ajax('ai-tutor/', 'post', {
+      data,
+      silent: true
+    })
   }
 }
 
@@ -198,9 +204,10 @@ export default {
  */
 async function ajax (url, method, options) {
   if (options !== undefined) {
-    var { params = {}, data = {} } = options
+    var { params = {}, data = {}, silent = false } = options
   } else {
     params = data = {}
+    silent = false
   }
   try {
     const res = await axios({
@@ -216,7 +223,7 @@ async function ajax (url, method, options) {
       }
       throw res
     } else {
-      if (method !== 'get' && url !== 'lecture/professor/course/students/') {
+      if (method !== 'get' && !silent && url !== 'lecture/professor/course/students/') {
         Vue.prototype.$success('Succeeded')
       }
       return res

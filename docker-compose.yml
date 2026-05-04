@@ -61,7 +61,7 @@ services:
       - JUDGE_SERVER_TOKEN=CHANGE_THIS
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - AI_TUTOR_PROVIDER=${AI_TUTOR_PROVIDER:-gemini}
-      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-1.5-flash}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash-lite}
     ports:
       - "0.0.0.0:80:8000"
       - "0.0.0.0:443:1443"

@@ -80,7 +80,7 @@
         Get only last submissions
       </b-form-checkbox>
     </b-modal>
-    <submission-detail-modal :submission_detail="submissionDetail"/>
+    <submission-detail-modal :submission_detail="submissionDetail" :problem_title="problemTitle"/>
   </div>
 </template>
 

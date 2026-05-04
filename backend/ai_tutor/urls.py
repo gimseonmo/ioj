@@ -5,4 +5,5 @@ from .views import AITutorAPI
 
 urlpatterns = [
     path("ai-tutor", AITutorAPI.as_view(), name="ai_tutor_api"),
+    path("ai-tutor/", AITutorAPI.as_view(), name="ai_tutor_api_slash"),
 ]
